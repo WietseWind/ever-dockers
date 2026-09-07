@@ -17,10 +17,11 @@ RUN dpkg-deb -x /tmp/bootstrap-ca.deb /tmp/bootstrap-ca \
     && useradd --uid 1001 --create-home --shell /bin/bash deploy \
     && passwd -d deploy \
     && chage -d 1970-01-02 -M 99999 deploy \
+    && chage -d 1970-01-02 sshd \
     && install -d -m 0755 /etc/ssh/authorized_keys \
     && ln -s /contract/http /http \
     && rm -rf /tmp/bootstrap-ca /tmp/bootstrap-ca.deb /tmp/packages.lock /var/lib/apt/lists/* \
-    && rm -f /etc/ssh/ssh_host_* /var/cache/ldconfig/aux-cache \
+    && rm -f /etc/ssh/ssh_host_* /var/cache/ldconfig/aux-cache /etc/shadow- \
     && find /var/log -type f -exec truncate -s 0 {} +
 
 # Interactive apt commands use normal Ubuntu repositories. They modify that container only.

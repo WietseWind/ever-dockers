@@ -48,6 +48,8 @@ actual_builder="$(docker inspect "buildx_buildkit_${builder_name}0" --format '{{
 build_image() {
     local output="$1" metadata="$2"
     shift 2
+    # Archive the COMMIT, not the working tree: checkout mtimes and local umask must not affect COPY layers.
+    git -C "$repo_root/$image_type" -c tar.umask=0022 archive --format=tar "$revision" . | \
     docker buildx build --builder "$builder_name" --platform linux/amd64 \
         --provenance=false --sbom=false --tag "$image_ref" \
         --build-arg "SOURCE_DATE_EPOCH=$epoch" --build-arg "VCS_REF=$revision" \
@@ -55,7 +57,7 @@ build_image() {
         --build-arg "IMAGE_REPOSITORY=$namespace/$image_type" \
         --secret "id=authorized_keys,src=$public_key" --metadata-file "$metadata" \
         --output "$output,rewrite-timestamp=true,oci-mediatypes=false,compression=gzip,compression-level=6,force-compression=true" \
-        "$@" "$repo_root/$image_type"
+        "$@" -
 }
 image_output="type=image,name=$image_ref,push=false"
 verify_image() {

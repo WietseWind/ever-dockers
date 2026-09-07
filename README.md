@@ -47,7 +47,7 @@ Read [PUBLISHING.md](PUBLISHING.md) before publishing. Version tags are never in
 
 ## Reproducibility
 
-The recipe pins Ubuntu by digest, package snapshot and direct versions, public-key bytes/hash, Dockerfile frontend, BuildKit engine, platform, timestamp epoch and compression settings. Build-time clock-dependent logs/cache files are normalized. Two no-cache builds must have the same image manifest digest before publishing.
+The recipe pins Ubuntu by digest, package snapshot and direct versions, public-key bytes/hash, Dockerfile frontend, BuildKit engine, platform, timestamp epoch and compression settings. The build context is a Git archive of the commit with fixed permissions/timestamps, independent of the local checkout. Build-time clock-dependent logs/cache files and account dates are normalized. Two no-cache builds must have the same image manifest digest before publishing.
 
 This is a measured release property, not an unconditional promise about every future machine. Exact release records state what was verified. Build attestation timestamps are excluded from the deterministic artifact; source labels alone are not a cryptographic proof of trustworthy provenance. Independently reproduce and compare the digest when assurance matters.
 

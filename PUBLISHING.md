@@ -23,6 +23,7 @@ Do not claim a release is complete until both websites have the links. `scripts/
 - Build packages come from the dated Ubuntu snapshot in `ubuntu-build.sources`, with direct versions in `packages.lock`. Ubuntu archive signatures and package hashes remain enabled.
 - A checksum-pinned Ubuntu CA package bootstraps TLS before apt. No insecure TLS option or unsigned repository is used.
 - `SOURCE_DATE_EPOCH` is the source Git commit timestamp; image file timestamps are rewritten. Clock-dependent install logs/cache and password age are normalized.
+- Build contexts come from `git archive` of that commit with an explicit archive umask, not working-tree files. Local checkout times and permissions cannot change COPY layers. Both newly created accounts have fixed password-age metadata; their clock-dependent shadow backup is removed.
 - The public key's bytes and SHA-256 are part of the build inputs. Secret mounts here carry a PUBLIC key only.
 - gzip level 6, forced compression and Docker media types are explicit. Build attestations/SBOM wrappers are disabled for deterministic manifest comparison; do not misrepresent source labels as signed provenance.
 - Runtime SSH host keys are generated at startup and intentionally differ between new leases. They are not part of the published image digest.
