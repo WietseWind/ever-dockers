@@ -1,0 +1,12 @@
+*
+!Dockerfile
+!packages.lock
+!ubuntu-build.sources
+!ubuntu.sources
+!deploy.sudoers
+!start.sh
+!nginx.conf.template
+!sshd_config.template
+!supervisord.conf
+!html/
+!html/**

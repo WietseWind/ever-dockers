@@ -1,0 +1,16 @@
+Port ${SSH_PORT}
+ListenAddress 0.0.0.0
+HostKey /contract/everweb/ssh/ssh_host_ed25519_key
+PidFile /run/sshd.pid
+PubkeyAuthentication yes
+AuthorizedKeysFile /etc/ssh/authorized_keys/%u
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+PermitEmptyPasswords no
+PermitRootLogin no
+UsePAM yes
+AllowUsers deploy
+X11Forwarding no
+AllowAgentForwarding no
+Subsystem sftp internal-sftp
+PrintMotd no

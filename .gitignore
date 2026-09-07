@@ -1,0 +1,11 @@
+.build/
+.env
+.env.*
+!.env.example
+data/
+*.key
+*.pem
+id_*
+!**/authorized_keys.pub
+.DS_Store
+node_modules/
