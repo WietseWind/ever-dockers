@@ -46,10 +46,10 @@ RUN --mount=from=runtime-downloads,target=/opt/runtime-downloads \
     && ln -s /opt/node/bin/npm /usr/local/bin/npm \
     && ln -s /opt/node/bin/npx /usr/local/bin/npx \
     && for login_dir in /home/deploy /root; do \
-         mkdir -p "$login_dir/.nvm/versions/node" "$login_dir/.nvm/alias"; \
+         mkdir -p "$login_dir/.nvm/versions/node/v24.20.0" "$login_dir/.nvm/alias"; \
          cp /usr/local/share/nvm/nvm.sh /usr/local/share/nvm/nvm-exec /usr/local/share/nvm/bash_completion "$login_dir/.nvm/"; \
          chmod 0755 "$login_dir/.nvm/nvm-exec"; \
-         ln -s /opt/node "$login_dir/.nvm/versions/node/v24.20.0"; \
+         ln -s /opt/node/bin /opt/node/include /opt/node/lib /opt/node/share "$login_dir/.nvm/versions/node/v24.20.0/"; \
          printf '%s\n' '24.20.0' > "$login_dir/.nvm/alias/default"; \
          sed -i '1i. /etc/profile.d/evernode-tools.sh' "$login_dir/.bashrc"; \
        done \
