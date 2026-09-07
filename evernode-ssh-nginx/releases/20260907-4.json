@@ -1,0 +1,36 @@
+{
+  "image": "wietsewind/evernode-ssh-nginx:20260907-4",
+  "digest": "sha256:e398108bd3c2240e9d501c42fe4d93b2c708e9eac7ed65ba75159c796c5c042c",
+  "immutableReference": "wietsewind/evernode-ssh-nginx@sha256:e398108bd3c2240e9d501c42fe4d93b2c708e9eac7ed65ba75159c796c5c042c",
+  "source": "https://github.com/WietseWind/ever-dockers",
+  "registry": "https://hub.docker.com/r/wietsewind/evernode-ssh-nginx",
+  "revision": "e23429a59e81bd726abbf83dcc3bb4ace111ee93",
+  "sourceTag": "evernode-ssh-nginx/20260907-4",
+  "sourceDateEpoch": "1788810006",
+  "publicKeyFile": "evernode-ssh-nginx/authorized_keys.pub",
+  "publicKeySha256": "06ebe7b73f1155643a63c30e49e8e349284d55ae680e9dc898238e4ecd1ab7a9",
+  "builder": "moby/buildkit:v0.31.2@sha256:2f5adac4ecd194d9f8c10b7b5d7bceb5186853db1b26e5abd3a657af0b7e26ec",
+  "platform": "linux/amd64",
+  "noCacheBuilds": 2,
+  "verification": {
+    "firstManifestDigest": "sha256:e398108bd3c2240e9d501c42fe4d93b2c708e9eac7ed65ba75159c796c5c042c",
+    "secondManifestDigest": "sha256:e398108bd3c2240e9d501c42fe4d93b2c708e9eac7ed65ba75159c796c5c042c",
+    "loadedAndPublishedManifestMatched": true,
+    "gitArchiveSha256": "e09f8edc28f023e3322f54328ea4ee52d7a2615f7e225f3dd180fa64cd4402ab",
+    "freshGitHubCheckoutArchiveMatched": true,
+    "environment": "Docker Desktop on macOS 14.7.8, ARM64 Linux engine 29.6.2 / 6.12.76-linuxkit, amd64 emulation, dedicated pinned BuildKit container",
+    "scope": "Two sequential no-cache builds on the same builder; public registry digest and OCI source/revision labels verified. Fresh clone verified at build-context level only.",
+    "crossMachineImageRebuildTested": false,
+    "signedProvenance": false
+  },
+  "runtimeSmokeTests": {
+    "environment": "Local Docker, localhost-only published ports; no live Evernode lease replaced",
+    "http": "HTTP success; SSH-uploaded /http/http-proof.txt served byte-for-byte",
+    "ssh": "Public-key login as deploy (UID 1001), password and direct root SSH login disabled by configuration",
+    "sudo": "sudo -n -i id returned UID 0",
+    "apt": "apt-get update and apt-get install -y nano succeeded over SSH; nano 7.2-2ubuntu0.2 installed",
+    "sameVolumeRecreation": "Site content and SSH host key persisted; strict host-key checking passed; sudo still worked",
+    "runtimePackageIsolation": "nano was absent after recreation from the original image, as expected",
+    "thisVersionTestedOnEvernodeHost": false
+  }
+}

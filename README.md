@@ -6,6 +6,8 @@ Docker image sources for the `ever` Evernode tenant CLI. This is **not** the CLI
 | --- | --- | --- |
 | Ubuntu nginx + SSH + sudo | [evernode-ssh-nginx](evernode-ssh-nginx/) | [Docker Hub](https://hub.docker.com/r/wietsewind/evernode-ssh-nginx) |
 
+Current verified release: `wietsewind/evernode-ssh-nginx:20260907-4`. Its [release record](evernode-ssh-nginx/releases/20260907-4.json) maps the exact source commit to the published digest and test results. Check out source tag `evernode-ssh-nginx/20260907-4` to reproduce it; this README/release record was added afterward.
+
 ## Layout
 
 ```text

@@ -4,6 +4,8 @@
 
 Ubuntu 24.04 with nginx, OpenSSH and passwordless sudo for the SSH-key-authenticated `deploy` user. This is a standalone application container, not the HotPocket consensus engine and not an Evernode host installer.
 
+Current verified release: `wietsewind/evernode-ssh-nginx:20260907-4`. [Exact source and verification record](https://github.com/WietseWind/ever-dockers/blob/main/evernode-ssh-nginx/releases/20260907-4.json). The published manifest is `sha256:e398108bd3c2240e9d501c42fe4d93b2c708e9eac7ed65ba75159c796c5c042c`; two uncached builds matched on the recorded builder. Cross-machine image reproduction has not been tested.
+
 ## Services and access
 
 - nginx serves `/http` on container port **8080**.
