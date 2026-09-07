@@ -28,6 +28,7 @@ Do not claim a release is complete until both websites have the links. `scripts/
 - The builder is `moby/buildkit:v0.31.2` pinned by digest in `docker.sh`; output is `linux/amd64`.
 - Build packages come from the dated Ubuntu snapshot in `ubuntu-build.sources`, with direct versions in `packages.lock`. Ubuntu archive signatures and package hashes remain enabled.
 - A checksum-pinned Ubuntu CA package bootstraps TLS before apt. No insecure TLS option or unsigned repository is used.
+- Non-APT runtimes are exact official release archives pinned by SHA-256 in the Dockerfile: Node 24, Bun's baseline linux-x64 executable, and nvm. Verify new checksums against the upstream release metadata before updating them; do not replace them with live install scripts or unversioned URLs.
 - `SOURCE_DATE_EPOCH` is the source Git commit timestamp; image file timestamps are rewritten. Clock-dependent install logs/cache and password age are normalized.
 - Build contexts come from `git archive` of that commit with an explicit archive umask, not working-tree files. Local checkout times and permissions cannot change COPY layers. Both newly created accounts have fixed password-age metadata; their clock-dependent shadow backup is removed.
 - The public key's bytes and SHA-256 are part of the build inputs. Secret mounts here carry a PUBLIC key only.
@@ -41,6 +42,7 @@ Do not claim a release is complete until both websites have the links. `scripts/
 2. Check the staged file list for private material. Commit and push the recipe to `origin/main`.
 3. Run `./docker.sh verify IMAGE_TYPE`. It runs two no-cache builds, compares full image manifest digests and records results under ignored `.build/`.
 4. Run `./docker.sh build IMAGE_TYPE` and smoke-test HTTP, public-key SSH, root elevation, apt installation, and same-volume persistence. Use test containers, not a user's live lease.
+   For `evernode-ssh-nginx`, also test `/html`, `/http` and `/var/www` aliasing, bundled tools under deploy/root SSH shells, and nginx rejection of dotfiles, symlink escapes, sensitive files and non-read methods. Exercise the tenant CLI's website-publish operation against a local test container, including dry-run, backups and optional deletion. Website publishing is distinct from Docker image publishing.
 5. Run `./docker.sh publish IMAGE_TYPE` (or `deploy`). It refuses existing tags, requires pushed source, checks/reuses matching verification results, compares the pre-publish digest and pushes the image.
 6. Synchronize the image README to Docker Hub with `node scripts/update-overview.mjs IMAGE_TYPE`. Read it back anonymously and verify both directions of links.
 7. Create Git tag `IMAGE_TYPE/VERSION` at the source commit recorded in `.build/*.verified.json`, not at a later documentation commit. Push this tag.

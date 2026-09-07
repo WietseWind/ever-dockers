@@ -19,16 +19,18 @@ export HTTP_PORT SSH_PORT
 
 # /contract is the host-mounted instance directory; keep app files outside HotPocket's state mount.
 install -d -m 0755 /contract/everweb /run/sshd
-# Keep the convenient /http path backed by the host-mounted contract directory.
+# /html, /http and /var/www all resolve to the same persistent contract directory.
 # If an older volume is reused, copy its site once without changing the original.
 if [ ! -e /contract/http ] && [ -d /contract/everweb/www ]; then
     cp -a /contract/everweb/www /contract/http
 fi
 install -d -o deploy -g deploy -m 0755 /contract/http
 install -d -m 0700 /contract/everweb/ssh
-if [ ! -f /http/index.html ]; then
-    cp /opt/everweb/html/index.html /http/index.html
-    chown deploy:deploy /http/index.html
+install -d -o deploy -g deploy -m 0700 /contract/everweb/publish-backups
+# Seed only a genuinely empty site. Do not resurrect index.html after a user's publication.
+if [ -z "$(find /html/ -mindepth 1 -maxdepth 1 -print -quit)" ]; then
+    cp /opt/everweb/html/index.html /html/index.html
+    chown deploy:deploy /html/index.html
 fi
 if [ ! -f /contract/everweb/ssh/ssh_host_ed25519_key ]; then
     ssh-keygen -q -t ed25519 -N '' -f /contract/everweb/ssh/ssh_host_ed25519_key
@@ -37,6 +39,6 @@ envsubst '${HTTP_PORT}' < /etc/everweb/nginx.conf.template > /etc/nginx/nginx.co
 envsubst '${SSH_PORT}' < /etc/everweb/sshd_config.template > /etc/ssh/sshd_config
 nginx -t
 /usr/sbin/sshd -t
-echo "Evernode services: HTTP=$HTTP_PORT root=/http SSH=$SSH_PORT user=deploy (sudo enabled)"
+echo "Evernode services: HTTP=$HTTP_PORT root=/html (/http and /var/www aliases) SSH=$SSH_PORT user=deploy (sudo enabled)"
 ssh-keygen -lf /contract/everweb/ssh/ssh_host_ed25519_key.pub
 exec /usr/bin/supervisord -n -c /etc/supervisor/everweb.conf

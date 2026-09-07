@@ -5,6 +5,7 @@
 !ubuntu.sources
 !deploy.sudoers
 !start.sh
+!tools-profile.sh
 !nginx.conf.template
 !sshd_config.template
 !supervisord.conf

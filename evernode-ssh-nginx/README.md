@@ -8,11 +8,21 @@ Current verified release: `wietsewind/evernode-ssh-nginx:20260907-4`. [Exact sou
 
 ## Services and access
 
-- nginx serves `/http` on container port **8080**.
+- nginx serves `/html` on container port **8080**. `/var/www` and the older `/http` path point to the same folder, backed by `/contract/http`.
 - SSH listens on container port **2222**, user **deploy**. Password and direct root SSH login are disabled.
-- `sudo -i` gives root **inside the container**; `sudo apt update` and `sudo apt install nano` work.
+- `sudo -i` gives root **inside the container**; `sudo apt update` and package installation work. Nano, jq, Python 3, rsync, Node **24.20.0** (with npm/npx), Bun **1.4.2** (baseline x64 build, with bunx), and nvm **0.40.7** are installed by default in recipe version `20260908-1`.
 - The published maintainer image authorizes the public key in `authorized_keys.pub`. You need its corresponding private key to log in. Rebuild with your own public key for your own deployments; never put a private key in a build context.
-- `/http` is a symlink to `/contract/http`. `/contract` should be a persistent volume; SSH host keys live under `/contract/everweb/ssh` outside the document root. `everweb` is just our internal directory name, not a platform requirement.
+- `/contract` should be a persistent volume; SSH host keys live under `/contract/everweb/ssh` outside the document root. Site publication backups go to `/contract/everweb/publish-backups` (private to `deploy` and root). `everweb` is just our internal directory name, not a platform requirement.
+
+Node and Bun work in SSH commands, interactive shells and `sudo -i`. nvm is a Bash function, loaded automatically for `deploy` and root; use `command -v nvm`, `nvm --version` and `nvm use 24`. The bundled Node 24 installation is shared and root-owned, with a per-user nvm version link. Additional `nvm install` versions are per-user. Global npm installs into the bundled version require sudo; project-local npm installs do not. Runtime nvm/npm/Bun changes are not part of the reproducible image or persistent website volume.
+
+## Static nginx hardening
+
+The default site denies all dotfiles/dot-directories, including `.env`, `.git` and `.well-known`; hides common backup, key, database, server-script and package/config files; disables directory listings and symlinks within the document root; and accepts only GET/HEAD for static resources. The health endpoint is `/health`. The configuration limits request bodies and idle/header/body/send timeouts, runs workers as `www-data`, and omits nginx version disclosure.
+
+Responses include `nosniff`, same-origin framing, a restrictive permissions policy, a referrer policy, and baseline CSP restrictions on objects, base URLs and framing. CSP intentionally does not restrict script/style/image origins because this is a general-purpose site container; apply a site-specific policy for stronger protection. No permissive CORS policy is added. TLS redirects and HSTS are not enabled on the host-assigned plain-HTTP port; configure them at a verified HTTPS endpoint/proxy. Serving hidden ACME challenges requires an explicit reviewed exception.
+
+The tenant CLI's `ever publish CONTAINER PATH` uploads a built/static site to `/html` using SSH/rsync, with hidden files and `node_modules` excluded and backups outside the public root. This is different from this repository's `docker.sh publish`, which releases a Docker image. Never upload private application configuration or credentials as website assets. Review backups/storage usage periodically; backups are not automatically discarded.
 
 Evernode image options:
 
@@ -33,7 +43,7 @@ ssh -i /path/to/private-key -p 2222 deploy@127.0.0.1
 
 ## Persistence and trust
 
-Site files and SSH server keys survive restart or recreation with the **same** volume, not migration to another lease. If an old `/contract/everweb/www` directory exists and `/contract/http` does not, startup copies the old site once without changing the original.
+Site files, publication backups and SSH server keys survive restart or recreation with the **same** volume, not migration to another lease. Existing `/contract/http` data from v4 is used directly by `/html`; if an old `/contract/everweb/www` directory exists and `/contract/http` does not, startup copies the old site once without changing the original. The default index is seeded only into an empty document root.
 
 Interactive apt changes survive only in that container's writable layer; put recurring requirements in the recipe and publish a new version. Root privilege is container-scoped. The host operator controls the underlying machine, so never put a wallet seed or valuable credentials in this container. Direct HTTP is unencrypted unless you arrange a TLS proxy.
 
