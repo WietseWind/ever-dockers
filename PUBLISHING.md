@@ -6,6 +6,12 @@ Only image recipes and their build/release support files belong in this reposito
 
 The public authorized key is intentionally included because it changes the image bytes and determines who may administer a deployed container. Never confuse it with the private login key. A custom public key is an additional input and must be preserved with the release if it differs from the committed key.
 
+## Standing instruction: when to release
+
+The user has requested that implementing Docker behavior changes that affect the built image also includes documenting and publishing them. Treat changes to the Dockerfile, installed packages, startup scripts, bundled configuration or assets as an end-to-end release task by default, including new image types. Publish the canonical sources and documentation to this GitHub repository and a new versioned image to Docker Hub; complete the checklist below, including source tag, digest record and both directions of links. The user need not repeat the publishing requirement for each image change.
+
+An explicit draft, local-only or do-not-publish instruction takes precedence. Explanation/review requests, CLI-only changes and documentation-only edits do not themselves require rebuilding or releasing an image. Do not substitute undocumented edits inside a live container for a requested image change. If tests, reproducibility, credentials or permissions block publication, report what remains incomplete instead of bypassing the gate. This workflow does not authorize replacing or terminating a live Evernode lease and is not unattended background publishing.
+
 ## Required links
 
 1. Root README → Docker Hub repository and corresponding image folder.

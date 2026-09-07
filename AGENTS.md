@@ -2,6 +2,7 @@
 
 This repository contains Docker image recipes only. Read README.md and PUBLISHING.md before modifying or publishing an image.
 
+- Standing user instruction: requests to implement Docker behavior changes that affect the built image include documentation and end-to-end publication by default, for existing and new image types. Unless explicitly scoped as draft/local-only/do-not-publish, finish the tested, reproducibility-verified new image release, GitHub source/docs publication, source tag/digest record and bilateral links. Do not stop at local edits. Explanation/review requests and CLI-only or documentation-only edits do not themselves require an image release. Report blockers; never bypass release checks or replace live leases implicitly.
 - One top-level folder per image type, named like its Docker Hub repository. Currently only `evernode-ssh-nginx/`.
 - Never add the sibling tenant CLI, `.env`, wallets, seeds, SSH private keys, Docker credentials, or runtime data. The committed `authorized_keys.pub` is PUBLIC and is an intentional reproducible build input.
 - The canonical image recipes live here, not in the sibling `evernode` checkout. That checkout may contain compatibility wrappers, never a competing maintained recipe.
