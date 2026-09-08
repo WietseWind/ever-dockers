@@ -1,0 +1,70 @@
+name: Native amd64 image smoke test
+
+on:
+  workflow_dispatch:
+    inputs:
+      digest:
+        description: 'Published image manifest digest (sha256:...)'
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  runtime:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      IMAGE_DIGEST: ${{ inputs.digest }}
+    steps:
+      # No repository checkout, secrets or third-party actions are required.
+      - name: Pull exact public image and test native runtimes
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$IMAGE_DIGEST" =~ ^sha256:[a-f0-9]{64}$ ]]
+          [[ "$(uname -m)" == x86_64 ]]
+          image="wietsewind/evernode-ssh-nginx@$IMAGE_DIGEST"
+          docker pull --platform linux/amd64 "$image"
+          docker image inspect "$image" --format '{{json .Config.Labels}}'
+          docker run -d --name ever-native-smoke --platform linux/amd64 \
+            -p 127.0.0.1:18085:8080 -v ever-native-smoke:/contract "$image"
+          curl --fail --silent --show-error --retry 12 --retry-all-errors --retry-delay 1 http://127.0.0.1:18085/health
+          docker exec --user deploy ever-native-smoke bash -ic '
+            set -euo pipefail
+            id
+            node --version
+            npm --version
+            nvm --version
+            nvm use 24
+            node --eval "if (6 * 7 !== 42) process.exit(1); console.log(process.version)"
+            bun --version
+            bun --eval "if (6 * 7 !== 42) process.exit(1); console.log(Bun.version)"
+            jq --version
+            python3 --version
+            nano --version
+            rsync --version
+            sudo -n -i id
+            sudo -n -i nvm use 24
+            sudo -n -i bun --eval "console.log(6 * 7)"
+            test "$(readlink -f /html)" = /contract/http
+            test "$(readlink -f /http)" = /contract/http
+            test "$(readlink -f /var/www)" = /contract/http
+            test "$(stat -c %a /contract/everweb/publish-backups)" = 700
+            printf "native persistence test\n" > /html/proof.txt
+          '
+          expected_key="$(docker exec ever-native-smoke sha256sum /contract/everweb/ssh/ssh_host_ed25519_key.pub)"
+          docker stop ever-native-smoke
+          docker run -d --name ever-native-persist --platform linux/amd64 \
+            -p 127.0.0.1:18085:8080 -v ever-native-smoke:/contract "$image"
+          actual_key="$(docker exec ever-native-persist sha256sum /contract/everweb/ssh/ssh_host_ed25519_key.pub)"
+          [[ "$actual_key" == "$expected_key" ]]
+          [[ "$(curl --fail --silent --show-error --retry 12 --retry-all-errors --retry-delay 1 http://127.0.0.1:18085/proof.txt)" == 'native persistence test' ]]
+          printf 'Native x86-64 runtime and persistence checks passed for `%s`.\n' "$image" >> "$GITHUB_STEP_SUMMARY"
+      - name: Container diagnostics and cleanup
+        if: always()
+        shell: bash
+        run: |
+          docker logs ever-native-smoke 2>&1 || true
+          docker logs ever-native-persist 2>&1 || true
+          docker stop ever-native-smoke ever-native-persist 2>/dev/null || true
