@@ -1,0 +1,66 @@
+{
+  "image": "wietsewind/evernode-ssh-nginx:20260908-1",
+  "digest": "sha256:06f4d0a9a9d7b30804b6805d63084d8e0b7edbfddc3026db44f306ea6a8b64d1",
+  "immutableReference": "wietsewind/evernode-ssh-nginx@sha256:06f4d0a9a9d7b30804b6805d63084d8e0b7edbfddc3026db44f306ea6a8b64d1",
+  "source": "https://github.com/WietseWind/ever-dockers",
+  "registry": "https://hub.docker.com/r/wietsewind/evernode-ssh-nginx",
+  "revision": "2889b5cf1474d90971887520cbff09ac62336c80",
+  "sourceTag": "evernode-ssh-nginx/20260908-1",
+  "sourceDateEpoch": "1788823597",
+  "publicKeyFile": "evernode-ssh-nginx/authorized_keys.pub",
+  "publicKeySha256": "06ebe7b73f1155643a63c30e49e8e349284d55ae680e9dc898238e4ecd1ab7a9",
+  "builder": "moby/buildkit:v0.31.2@sha256:2f5adac4ecd194d9f8c10b7b5d7bceb5186853db1b26e5abd3a657af0b7e26ec",
+  "platform": "linux/amd64",
+  "noCacheBuilds": 2,
+  "runtimeArchives": {
+    "node": {
+      "version": "24.20.0",
+      "url": "https://nodejs.org/dist/v24.20.0/node-v24.20.0-linux-x64.tar.xz",
+      "sha256": "2f2c0da162318f0de47665410c7c8c2ed3d36c8f3105de4bbc61176c70a7cbf2"
+    },
+    "bun": {
+      "version": "1.4.2",
+      "variant": "linux-x64-baseline",
+      "url": "https://github.com/oven-sh/bun/releases/download/bun-v1.4.2/bun-linux-x64-baseline.zip",
+      "sha256": "c678040f14fe0440eb839d37cbd0ce4c051a32da72806ac97de6a6aab6bf728f"
+    },
+    "nvm": {
+      "version": "0.40.7",
+      "url": "https://github.com/nvm-sh/nvm/archive/refs/tags/v0.40.7.tar.gz",
+      "sha256": "d2fb84dba9914b02cd69b97df35dfca8695b8f22df6128667034d85b69b52d57"
+    }
+  },
+  "verification": {
+    "firstManifestDigest": "sha256:06f4d0a9a9d7b30804b6805d63084d8e0b7edbfddc3026db44f306ea6a8b64d1",
+    "secondManifestDigest": "sha256:06f4d0a9a9d7b30804b6805d63084d8e0b7edbfddc3026db44f306ea6a8b64d1",
+    "loadedAndPublishedManifestMatched": true,
+    "gitArchiveSha256": "9d787458fa05a15609897b616dca234110f3e857dfff15f3e786f46ed33c51e5",
+    "freshGitHubCheckoutArchiveMatched": true,
+    "environment": "Docker Desktop on macOS 14.7.8, ARM64 Linux engine 29.6.2 / 6.12.76-linuxkit, amd64 emulation, dedicated pinned BuildKit container",
+    "scope": "Two sequential no-cache builds on the same builder; public registry digest and OCI source/revision labels verified. Fresh clone verified at build-context level only. Published artifact additionally smoke-tested on native x86-64 Linux, without rebuilding it there.",
+    "crossMachineImageRebuildTested": false,
+    "signedProvenance": false
+  },
+  "runtimeSmokeTests": {
+    "environment": "Disposable localhost-only Docker containers plus a native x86-64 GitHub Actions runner; no live Evernode lease modified",
+    "http": "Default site and uploaded website served byte-for-byte on port 8080; GET/HEAD health endpoint passed",
+    "ssh": "Public-key login as deploy (UID 1001); effective sshd configuration denies password, keyboard-interactive and direct root login",
+    "sudo": "sudo -n -i id returned UID 0; Node, Bun version and nvm use 24 available in deploy/root SSH shells",
+    "apt": "apt-get update and apt-get install -y tree succeeded over SSH; tree 2.1.1-2ubuntu3.24.04.2 installed",
+    "tools": "nano 7.2, jq 1.7, Python 3.12.3, rsync, Node 24.20.0, npm 11.19.0, Bun 1.4.2 and nvm 0.40.7 checked",
+    "webRoots": "/html, /http and /var/www resolve to /contract/http",
+    "publish": "Actual SSH/rsync pipeline passed dry-run, hidden/dependency exclusions, quoted paths, content update with unchanged size/mtime, default remote-file preservation, overwrite backups and optional deletion with backups",
+    "nginx": "Existing dotfiles/dot-directories, encoded dotfile URL, node_modules, backup/config/server-script files denied; symlink escape and directory listing denied; POST denied; security headers present on success and error responses",
+    "sameVolumeRecreation": "Site SHA-256 and SSH host-key SHA-256 unchanged; strict SSH host-key checking passed, private backups retained at mode 0700, sudo and bundled Node/nvm still worked",
+    "runtimePackageIsolation": "Interactively installed tree absent after recreation from original image, as expected",
+    "nativeRuntime": {
+      "result": "success",
+      "run": "https://github.com/WietseWind/ever-dockers/actions/runs/34224031688",
+      "workflowRevision": "a3d0090",
+      "environment": "GitHub-hosted ubuntu-24.04, native x86_64",
+      "checks": "Pulled exact manifest digest; Node and Bun executed JavaScript, deploy/root nvm and sudo passed; bundled tools, HTTP and same-volume website/SSH-key persistence passed"
+    },
+    "localEmulationLimitation": "Bun --version succeeds under this Mac's amd64 emulation, but Bun JavaScript evaluation aborts with JavaScriptCore MemoryExhaustion. The exact same published image passed JavaScript execution on native x86_64; no emulation workaround is baked into the image.",
+    "thisVersionTestedOnEvernodeHost": false
+  }
+}

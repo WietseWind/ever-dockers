@@ -4,15 +4,18 @@ Docker image sources for the `ever` Evernode tenant CLI. This is **not** the CLI
 
 | Image | Source | Registry |
 | --- | --- | --- |
-| Ubuntu nginx + SSH + sudo | [evernode-ssh-nginx](evernode-ssh-nginx/) | [Docker Hub](https://hub.docker.com/r/wietsewind/evernode-ssh-nginx) |
+| Ubuntu nginx + SSH + sudo + Node/Bun/tools | [evernode-ssh-nginx](evernode-ssh-nginx/) | [Docker Hub](https://hub.docker.com/r/wietsewind/evernode-ssh-nginx) |
 
-Current verified release: `wietsewind/evernode-ssh-nginx:20260907-4`. Its [release record](evernode-ssh-nginx/releases/20260907-4.json) maps the exact source commit to the published digest and test results. Check out source tag `evernode-ssh-nginx/20260907-4` to reproduce it; this README/release record was added afterward.
+Current verified release: `wietsewind/evernode-ssh-nginx:20260908-1`. Its [release record](evernode-ssh-nginx/releases/20260908-1.json) maps the exact source commit to the published digest and test results. Check out source tag `evernode-ssh-nginx/20260908-1` to reproduce it; this README/release record was added afterward. It serves `/html` (also `/var/www` and `/http`), adds pinned developer tools and hardened static nginx, and supports the tenant CLI's `ever publish` website upload. Existing leases do not change automatically.
+
+Two no-cache builds matched; the exact published image also passed [native x86-64 runtime checks](https://github.com/WietseWind/ever-dockers/actions/runs/34224031688). Bun JavaScript execution fails under this Mac's amd64 emulation but passed on native Linux; local emulation is not a supported substitute for native Bun runtime validation.
 
 ## Layout
 
 ```text
 docker.sh                   # build, verify, publish (deploy = publish)
 PUBLISHING.md               # release and reproducibility requirements
+.github/workflows/          # secret-free native runtime smoke tests by image digest
 evernode-ssh-nginx/
   Dockerfile
   VERSION

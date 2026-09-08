@@ -4,7 +4,7 @@
 
 Ubuntu 24.04 with nginx, OpenSSH and passwordless sudo for the SSH-key-authenticated `deploy` user. This is a standalone application container, not the HotPocket consensus engine and not an Evernode host installer.
 
-Current verified release: `wietsewind/evernode-ssh-nginx:20260907-4`. [Exact source and verification record](https://github.com/WietseWind/ever-dockers/blob/main/evernode-ssh-nginx/releases/20260907-4.json). The published manifest is `sha256:e398108bd3c2240e9d501c42fe4d93b2c708e9eac7ed65ba75159c796c5c042c`; two uncached builds matched on the recorded builder. Cross-machine image reproduction has not been tested.
+Current verified release: `wietsewind/evernode-ssh-nginx:20260908-1`. [Exact source and verification record](https://github.com/WietseWind/ever-dockers/blob/main/evernode-ssh-nginx/releases/20260908-1.json). The published manifest is `sha256:06f4d0a9a9d7b30804b6805d63084d8e0b7edbfddc3026db44f306ea6a8b64d1`; two uncached builds matched on the recorded builder. Cross-machine image reproduction has not been tested. The exact image passed a separate [native x86-64 runtime smoke test](https://github.com/WietseWind/ever-dockers/actions/runs/34224031688).
 
 ## Services and access
 
@@ -15,6 +15,8 @@ Current verified release: `wietsewind/evernode-ssh-nginx:20260907-4`. [Exact sou
 - `/contract` should be a persistent volume; SSH host keys live under `/contract/everweb/ssh` outside the document root. Site publication backups go to `/contract/everweb/publish-backups` (private to `deploy` and root). `everweb` is just our internal directory name, not a platform requirement.
 
 Node and Bun work in SSH commands, interactive shells and `sudo -i`. nvm is a Bash function, loaded automatically for `deploy` and root; use `command -v nvm`, `nvm --version` and `nvm use 24`. The bundled Node 24 installation is shared and root-owned, with per-user nvm version directories referencing it. Additional `nvm install` versions are per-user. Global npm installs into the bundled version require sudo; project-local npm installs do not. Runtime nvm/npm/Bun changes are not part of the reproducible image or persistent website volume.
+
+Runtime target: native Linux x86-64 (Bun's baseline binary still requires SSE4.2). On the recorded Apple Silicon Docker/QEMU test environment, `bun --version` passed but JavaScript evaluation aborted with JavaScriptCore `MemoryExhaustion`; the exact same published image passed actual Node/Bun JavaScript execution on native Linux. Do not interpret a version-only check or successful cross-build as full emulated-runtime support.
 
 ## Static nginx hardening
 
